@@ -1,0 +1,13 @@
+{
+  "$meta": {
+    "name": "GiraPurge Official Repository",
+    "description": "Official GiraPurge 1.0.0 repository by Giraium Studio for Revenge.",
+    "author": "Giraium Studio",
+    "homepage": "https://giraium.github.io/GiraPurge/"
+  },
+  "com.girapurge": {
+    "name": "GiraPurge",
+    "version": "1.0.0",
+    "author": "Giraium Studio"
+  }
+}

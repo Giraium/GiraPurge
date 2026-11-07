@@ -1,0 +1,30 @@
+{
+  "format": 1,
+  "name": "GiraPurge Official Repository",
+  "description": "GiraPurge by Giraium Studio: safely and precisely delete your own Discord messages from a DM or a specific Discord channel.",
+  "plugins": {
+    "com.girapurge": {
+      "name": "GiraPurge",
+      "description": "Deleting messages is better than deleting friendships; this plugin lets you safely and precisely delete your own messages from either a DM or a specific Discord channel.",
+      "author": "Giraium Studio",
+      "channels": {
+        "latest": "1.0.0"
+      },
+      "versions": {
+        "1.0.0": {
+          "url": "https://giraium.github.io/GiraPurge/GiraPurge-1.0.0.zip",
+          "sha256": "f6259b5c6105ce0a1095ede3a265a3c04e02e1eae2ed10ae50bc18181f0608d6",
+          "size": 60515,
+          "dependencies": {
+            "revenge.api": {
+              "version": ">=1 <2"
+            },
+            "discord": {
+              "version": "*"
+            }
+          }
+        }
+      }
+    }
+  }
+}

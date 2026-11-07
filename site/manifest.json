@@ -1,0 +1,16 @@
+{
+  "name": "GiraPurge",
+  "description": "Safely delete only your own Discord messages in the selected DM or channel.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Giraium Studio",
+      "id": "0"
+    }
+  ],
+  "main": "index.js",
+  "vendetta": {
+    "icon": null
+  },
+  "hash": "7E3A75EA275F10F12B192DC1D259A65ACDBFAA3E48A968011A23535516B4CE28"
+}

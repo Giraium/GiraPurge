@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#252429">
+  <meta name="description" content="GiraPurge 1.0.0 by Giraium Studio — Deleting messages is better than deleting friendships; this plugin lets you safely and precisely delete your own messages from either a DM or a specific Discord channel.">
+  <meta property="og:title" content="GiraPurge 1.0.0">
+  <meta property="og:description" content="Deleting messages is better than deleting friendships; safely and precisely delete your own messages from a DM or a specific Discord channel.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <title>GiraPurge 1.0.0</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #252429;
+      --panel: #2e2d32;
+      --panel-2: #34333a;
+      --line: #45434b;
+      --accent: #5865f2;
+      --accent-soft: #c9ccff;
+      --text: #ffffff;
+      --muted: #949397;
+      --success: #43b581;
+      --danger: #ed4245;
+      --max: 1160px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-width: 320px; background: var(--bg); color: var(--text); font: 15px/1.65 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .shell { width: min(var(--max), calc(100% - 44px)); margin: 0 auto; }
+    .topbar { position: sticky; top: 0; z-index: 30; background: rgba(37,36,41,.96); border-bottom: 1px solid var(--line); backdrop-filter: blur(14px); }
+    .nav { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 850; letter-spacing: -.025em; }
+    .brand-mark { width: 40px; height: 40px; display: block; border-radius: 12px; }
+    .brand-name { display: block; font-size: 15px; }
+    .brand-by { display: block; color: var(--muted); font-size: 11px; font-weight: 650; letter-spacing: .03em; margin-top: 1px; }
+    .nav-right { display: flex; align-items: center; gap: 18px; }
+    .nav-links { display: flex; align-items: center; gap: 20px; color: var(--muted); font-size: 13px; font-weight: 750; }
+    .nav-links a:hover, .footer-links a:hover { color: var(--text); }
+    .lang { min-height: 32px; padding: 0 11px; border: 1px solid var(--line); border-radius: 7px; background: transparent; color: var(--text); cursor: pointer; font: inherit; font-size: 12px; font-weight: 750; }
+    .hero { padding: 92px 0 78px; border-bottom: 1px solid var(--line); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(300px, .82fr); gap: 70px; align-items: center; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--accent-soft); font-size: 12px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+    h1 { max-width: 760px; margin: 18px 0 20px; font-size: clamp(43px, 7vw, 78px); line-height: 1.02; letter-spacing: -.07em; }
+    .hero-copy { max-width: 690px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.78; }
+    .actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 30px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 45px; padding: 0 17px; border: 1px solid transparent; border-radius: 7px; font-size: 13px; font-weight: 850; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+    .button:hover { transform: translateY(-1px); }
+    .button.primary { background: var(--accent); }
+    .button.primary:hover { background: #6b76f5; }
+    .button.secondary { border-color: var(--line); background: transparent; color: var(--text); }
+    .button.secondary:hover { border-color: #70707a; background: rgba(255,255,255,.04); }
+    .release-line { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 19px; color: var(--muted); font-size: 12px; }
+    .release-line strong { color: var(--text); }
+    .hero-card { padding: 24px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+    .hero-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 17px; border-bottom: 1px solid var(--line); }
+    .hero-card-title { font-weight: 850; }
+    .status { display: inline-flex; align-items: center; gap: 7px; color: #b9f6c6; font-size: 11px; font-weight: 850; }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+    .metric { padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .metric:last-child { padding-bottom: 0; border-bottom: 0; }
+    .metric-label { color: var(--muted); font-size: 12px; }
+    .metric-value { margin-top: 4px; font-size: 19px; font-weight: 850; letter-spacing: -.025em; }
+    section { padding: 82px 0; border-bottom: 1px solid var(--line); }
+    .section-heading { max-width: 720px; margin-bottom: 34px; }
+    .section-kicker { color: var(--accent-soft); font-size: 12px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    h2 { margin: 8px 0 10px; font-size: clamp(29px, 4vw, 44px); line-height: 1.1; letter-spacing: -.05em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: 16px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .feature { min-height: 192px; padding: 22px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+    .feature-icon { width: 35px; height: 35px; display: grid; place-items: center; margin-bottom: 18px; border-radius: 9px; background: rgba(88,101,242,.18); color: var(--accent-soft); font-size: 12px; font-weight: 900; }
+    .feature h3 { margin: 0 0 7px; font-size: 16px; }
+    .feature p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.65; }
+    .install-grid, .community-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(290px, .78fr); gap: 18px; align-items: stretch; }
+    .card { padding: 26px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+    .card h3 { margin: 0 0 10px; font-size: 19px; }
+    .card > p { margin: 0 0 20px; color: var(--muted); }
+    .code-line { display: flex; align-items: center; gap: 10px; padding: 13px 14px; background: #222126; border: 1px solid var(--line); border-radius: 7px; font: 12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow: auto; }
+    .code-line code { flex: 1; color: #dedfff; white-space: nowrap; }
+    .copy { flex: 0 0 auto; border: 0; background: transparent; color: var(--accent-soft); cursor: pointer; font: inherit; font-size: 11px; font-weight: 850; }
+    .copy:hover { color: var(--text); }
+    .link-list { display: grid; gap: 0; margin-top: 18px; }
+    .link-list a { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--accent-soft); font-size: 13px; font-weight: 800; }
+    .link-list a:last-child { border-bottom: 0; }
+    .link-list a span:last-child { color: var(--muted); font-weight: 600; }
+    .safety-list { display: grid; gap: 14px; margin-top: 22px; }
+    .safety-item { display: flex; gap: 11px; color: var(--muted); font-size: 13px; }
+    .safety-item strong { display: block; color: var(--text); }
+    .check { flex: 0 0 auto; color: var(--success); font-weight: 900; }
+    .community-grid { grid-template-columns: minmax(0, .82fr) minmax(290px, 1.18fr); }
+    .handle-card { display: grid; gap: 9px; padding: 22px; background: linear-gradient(135deg, rgba(88,101,242,.18), rgba(46,45,50,.9)); border: 1px solid #45445a; border-radius: 10px; }
+    .handle-label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+    .handle { color: var(--text); font: 850 25px/1.1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: -.03em; }
+    .handle-note { color: var(--muted); font-size: 13px; }
+    .policy-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .policy-list a { padding: 12px 13px; border: 1px solid var(--line); border-radius: 7px; color: var(--accent-soft); font-size: 13px; font-weight: 800; }
+    .policy-list a:hover { background: rgba(255,255,255,.04); border-color: #70707a; }
+    .release-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .release-card { padding: 23px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+    .release-card h3 { margin: 0 0 10px; font-size: 17px; }
+    .release-card p { margin: 0; color: var(--muted); font-size: 13px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .tag { padding: 5px 9px; border: 1px solid var(--line); border-radius: 5px; color: var(--accent-soft); font-size: 11px; font-weight: 850; }
+    footer { padding: 34px 0 48px; color: var(--muted); font-size: 12px; }
+    .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
+    [dir="rtl"] body { font-family: Tahoma, Arial, sans-serif; }
+    [dir="rtl"] .nav, [dir="rtl"] .hero-card-head, [dir="rtl"] .footer-row { flex-direction: row-reverse; }
+    [dir="rtl"] .nav-right, [dir="rtl"] .nav-links { flex-direction: row-reverse; }
+    [dir="rtl"] .link-list a { flex-direction: row-reverse; }
+    [dir="rtl"] .safety-item { direction: rtl; }
+    @media (max-width: 860px) { .hero-grid, .install-grid, .community-grid { grid-template-columns: 1fr; gap: 34px; } .feature-grid { grid-template-columns: 1fr 1fr; } .hero { padding-top: 66px; } }
+    @media (max-width: 620px) { .shell { width: min(100% - 28px, var(--max)); } .nav { min-height: 64px; } .nav-links a { display: none; } .hero { padding: 58px 0; } h1 { font-size: 45px; } .hero-copy { font-size: 16px; } section { padding: 58px 0; } .feature-grid, .release-grid { grid-template-columns: 1fr; } .policy-list { grid-template-columns: 1fr; } .footer-row { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav">
+      <a class="brand" href="#top" aria-label="GiraPurge home">
+        <img class="brand-mark" src="assets/girapurge-brand.png" alt="GiraPurge logo">
+        <span><span class="brand-name">GiraPurge 1.0.0</span><span class="brand-by">by Giraium Studio</span></span>
+      </a>
+      <div class="nav-right">
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#features" data-en="Features" data-ar="الميزات">Features</a>
+          <a href="#install" data-en="Install" data-ar="التثبيت">Install</a>
+          <a href="#community" data-en="Community" data-ar="المجتمع">Community</a>
+          <a href="#safety" data-en="Safety" data-ar="الأمان">Safety</a>
+        </nav>
+        <button class="lang" id="langButton" type="button">العربية</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="eyebrow" data-en="Giraium Studio · Official release" data-ar="Giraium Studio · الإصدار الرسمي">Giraium Studio · Official release</div>
+          <h1 data-en="Purge your Discord messages with control." data-ar="طهّر رسائلك في ديسكورد بتحكم كامل.">Purge your Discord messages with control.</h1>
+          <p class="hero-copy" data-en="Deleting messages is better than deleting friendships; this plugin lets you safely and precisely delete your own messages from either a DM or a specific Discord channel." data-ar="حذف الرسائل أفضل من حذف الصداقات؛ تتيح لك هذه الإضافة حذف رسائلك أنت بأمان ودقة من رسالة خاصة أو قناة محددة في ديسكورد.">Deleting messages is better than deleting friendships; this plugin lets you safely and precisely delete your own messages from either a DM or a specific Discord channel.</p>
+          <div class="actions">
+            <a class="button primary" href="#install" data-en="Install with Revenge" data-ar="التثبيت عبر Revenge">Install with Revenge</a>
+            <a class="button secondary" href="https://github.com/Giraium/GiraPurge" target="_blank" rel="noopener" data-en="Explore on GitHub" data-ar="استكشفه على GitHub">Explore on GitHub</a>
+          </div>
+          <div class="release-line"><strong>GiraPurge 1.0.0</strong><span>•</span><span data-en="Stable official package" data-ar="الحزمة الرسمية المستقرة">Stable official package</span></div>
+        </div>
+        <aside class="hero-card" aria-label="Release summary">
+          <div class="hero-card-head"><span class="hero-card-title" data-en="Project standard" data-ar="معيار المشروع">Project standard</span><span class="status" data-en="Stable" data-ar="مستقر">Stable</span></div>
+          <div class="metric"><div class="metric-label" data-en="Ownership" data-ar="الملكية">Ownership</div><div class="metric-value">Giraium Studio</div></div>
+          <div class="metric"><div class="metric-label" data-en="Scope" data-ar="النطاق">Scope</div><div class="metric-value" data-en="Your messages only" data-ar="رسائلك فقط">Your messages only</div></div>
+          <div class="metric"><div class="metric-label" data-en="Control" data-ar="التحكم">Control</div><div class="metric-value" data-en="Preview · Pause · Resume" data-ar="معاينة · إيقاف · استئناف">Preview · Pause · Resume</div></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="shell">
+        <div class="section-heading"><div class="section-kicker" data-en="Built for confidence" data-ar="مصمم للثقة">Built for confidence</div><h2 data-en="A focused workflow, not a risky bulk action." data-ar="مسار تطهير واضح، وليس إجراءً جماعياً محفوفاً بالمخاطر.">A focused workflow, not a risky bulk action.</h2><p data-en="Every part of GiraPurge is built around a narrow target, explicit rules, and visible progress." data-ar="كل جزء من GiraPurge مبني حول هدف محدد وقواعد واضحة وتقدم مرئي.">Every part of GiraPurge is built around a narrow target, explicit rules, and visible progress.</p></div>
+        <div class="feature-grid">
+          <article class="feature"><div class="feature-icon">01</div><h3 data-en="Owner-only deletion" data-ar="حذف رسائلك فقط">Owner-only deletion</h3><p data-en="The engine verifies message ownership before a delete action is attempted." data-ar="يتحقق المحرك من ملكية الرسالة قبل محاولة تنفيذ الحذف.">The engine verifies message ownership before a delete action is attempted.</p></article>
+          <article class="feature"><div class="feature-icon">02</div><h3 data-en="Safe preview" data-ar="معاينة آمنة">Safe preview</h3><p data-en="Inspect candidates first, then start the purge from the same controlled workflow." data-ar="افحص الرسائل المرشحة أولاً، ثم ابدأ التطهير من المسار نفسه.">Inspect candidates first, then start the purge from the same controlled workflow.</p></article>
+          <article class="feature"><div class="feature-icon">03</div><h3 data-en="Deep history" data-ar="تاريخ قديم جداً">Deep history</h3><p data-en="Checkpoints and targeted exploration help reach older messages without losing state." data-ar="نقاط الحفظ والاستكشاف الموجه يساعدان على الوصول للرسائل القديمة دون فقدان الحالة.">Checkpoints and targeted exploration help reach older messages without losing state.</p></article>
+          <article class="feature"><div class="feature-icon">04</div><h3 data-en="Clear progress" data-ar="تقدم واضح">Clear progress</h3><p data-en="Live deletion, failure, skipped, and session-limit indicators keep the operation understandable." data-ar="مؤشرات المحذوفة والفاشلة والمتروكة وحد الجلسة تجعل العملية مفهومة.">Live deletion, failure, skipped, and session-limit indicators keep the operation understandable.</p></article>
+          <article class="feature"><div class="feature-icon">05</div><h3 data-en="Pause and resume" data-ar="إيقاف واستئناف">Pause and resume</h3><p data-en="Pause safely, preserve the current plan, and continue later from the saved state." data-ar="أوقف المهمة بأمان، واحفظ الخطة الحالية، ثم تابع لاحقاً من الحالة المحفوظة.">Pause safely, preserve the current plan, and continue later from the saved state.</p></article>
+          <article class="feature"><div class="feature-icon">06</div><h3 data-en="Reports and audit" data-ar="تقارير وتدقيق">Reports and audit</h3><p data-en="Review each session with target details, timing, outcomes, and copyable audit details." data-ar="راجع كل جلسة مع تفاصيل الهدف والمدة والنتائج وتفاصيل تدقيق قابلة للنسخ.">Review each session with target details, timing, outcomes, and copyable audit details.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="install">
+      <div class="shell">
+        <div class="section-heading"><div class="section-kicker" data-en="Get started" data-ar="ابدأ الآن">Get started</div><h2 data-en="Install the official repository." data-ar="ثبّت المستودع الرسمي.">Install the official repository.</h2><p data-en="Use the official repository URL in Revenge. One stable address, one official package, maintained by Giraium Studio." data-ar="استخدم رابط المستودع الرسمي داخل Revenge. عنوان مستقر واحد وحزمة رسمية واحدة بإدارة Giraium Studio.">Use the official repository URL in Revenge. One stable address, one official package, maintained by Giraium Studio.</p></div>
+        <div class="install-grid">
+          <div class="card">
+            <h3 data-en="Revenge repository" data-ar="مستودع Revenge">Revenge repository</h3>
+            <p data-en="Use the repository URL only in the repository manager. If the + button asks for a plugin URL, use the direct JavaScript link below." data-ar="استخدم رابط المستودع داخل مدير المستودعات فقط. إذا كان زر + يطلب رابط إضافة مباشرة، استخدم رابط JavaScript الموجود أدناه.">Use the repository URL only in the repository manager. If the + button asks for a plugin URL, use the direct JavaScript link below.</p>
+            <div class="code-line"><code id="repoUrl">https://giraium.github.io/GiraPurge/</code><button class="copy" type="button" data-copy="repoUrl" data-en="COPY" data-ar="نسخ">COPY</button></div>
+            <div class="link-list">
+              <a href="GiraPurge-1.0.0.zip"><span data-en="Official package" data-ar="الحزمة الرسمية">Official package</span><span>1.0.0 ↗</span></a>
+              <a href="index.js"><span data-en="Direct plugin JavaScript" data-ar="رابط JavaScript المباشر">Direct plugin JavaScript</span><span>JS ↗</span></a>
+              <a href="manifest.json"><span data-en="Plugin manifest" data-ar="ملف تعريف الإضافة">Plugin manifest</span><span>JSON ↗</span></a>
+              <a href="https://github.com/Giraium/GiraPurge/releases/tag/v1.0.0" target="_blank" rel="noopener"><span data-en="GitHub release" data-ar="إصدار GitHub">GitHub release</span><span>1.0.0 ↗</span></a>
+            </div>
+          </div>
+          <div class="card" id="safety">
+            <h3 data-en="Safety by design" data-ar="أمان مصمم داخل النظام">Safety by design</h3>
+            <p data-en="GiraPurge is deliberately narrow: it acts on one selected target and protects messages that do not belong to the current account." data-ar="GiraPurge مصمم بنطاق ضيق عمداً: يعمل على هدف محدد ويحمي الرسائل التي لا تعود للحساب الحالي.">GiraPurge is deliberately narrow: it acts on one selected target and protects messages that do not belong to the current account.</p>
+            <div class="safety-list">
+              <div class="safety-item"><span class="check">✓</span><div><strong data-en="No account token handling" data-ar="لا يتعامل مع رمز الحساب">No account token handling</strong><span data-en="Uses the host application’s available actions." data-ar="يستخدم الإجراءات المتاحة داخل التطبيق المضيف.">Uses the host application’s available actions.</span></div></div>
+              <div class="safety-item"><span class="check">✓</span><div><strong data-en="Preview never deletes" data-ar="المعاينة لا تحذف">Preview never deletes</strong><span data-en="Candidates are inspected before execution." data-ar="يتم فحص المرشحين قبل التنفيذ.">Candidates are inspected before execution.</span></div></div>
+              <div class="safety-item"><span class="check">✓</span><div><strong data-en="Paced, resumable execution" data-ar="تنفيذ متدرج قابل للاستئناف">Paced, resumable execution</strong><span data-en="Checkpoints preserve the workflow." data-ar="نقاط الحفظ تحافظ على سير العملية.">Checkpoints preserve the workflow.</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="community">
+      <div class="shell">
+        <div class="section-heading"><div class="section-kicker" data-en="Community" data-ar="المجتمع">Community</div><h2 data-en="Share ideas. Keep the project focused." data-ar="شارك أفكارك. وحافظ على تركيز المشروع.">Share ideas. Keep the project focused.</h2><p data-en="Use the GitHub issue tracker for suggestions, improvements, and project feedback. Please keep private account data out of public discussions." data-ar="استخدم نظام البلاغات في GitHub للاقتراحات والتحسينات والملاحظات. رجاءً لا تشارك بيانات الحساب الخاصة في النقاشات العامة.">Use the GitHub issue tracker for suggestions, improvements, and project feedback. Please keep private account data out of public discussions.</p></div>
+        <div class="community-grid">
+          <div class="card handle-card"><span class="handle-label" data-en="GitHub" data-ar="التواصل عبر GitHub">GitHub</span><strong class="handle">Giraium/GiraPurge</strong><span class="handle-note" data-en="For suggestions, improvement ideas, and project feedback." data-ar="للاقتراحات والأفكار التحسينية وملاحظات المشروع.">For suggestions, improvement ideas, and project feedback.</span><a class="button secondary" href="https://github.com/Giraium/GiraPurge/issues" target="_blank" rel="noopener" data-en="Open an issue" data-ar="فتح بلاغ">Open an issue</a></div>
+          <div class="card"><h3 data-en="Project policies" data-ar="سياسات المشروع">Project policies</h3><p data-en="GiraPurge is maintained as a proprietary project by Giraium Studio. Read the project rules before copying code, opening an issue, or submitting an idea." data-ar="تتم إدارة GiraPurge كمشروع مملوك لـ Giraium Studio. اقرأ قواعد المشروع قبل نسخ الكود أو فتح بلاغ أو تقديم فكرة.">GiraPurge is maintained as a proprietary project by Giraium Studio. Read the project rules before copying code, opening an issue, or submitting an idea.</p><div class="policy-list"><a href="LICENSE.md" data-en="Proprietary terms" data-ar="شروط الملكية">Proprietary terms</a><a href="CONTRIBUTING.md" data-en="Contributing" data-ar="المساهمات">Contributing</a><a href="CODE_OF_CONDUCT.md" data-en="Code of conduct" data-ar="كود السلوك">Code of conduct</a><a href="SECURITY.md" data-en="Security policy" data-ar="سياسة الأمان">Security policy</a></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shell">
+        <div class="section-heading"><div class="section-kicker" data-en="Official release" data-ar="الإصدار الرسمي">Official release</div><h2 data-en="GiraPurge 1.0.0 is ready for everyday use." data-ar="GiraPurge 1.0.0 جاهز للاستخدام اليومي.">GiraPurge 1.0.0 is ready for everyday use.</h2><p data-en="A complete, focused core workflow for controlled personal message purging on Discord mobile." data-ar="مسار أساسي متكامل ومركّز لتطهير رسائلك الشخصية بشكل متحكم به على ديسكورد للهاتف.">A complete, focused core workflow for controlled personal message purging on Discord mobile.</p></div>
+        <div class="release-grid">
+          <article class="release-card"><h3 data-en="Included in 1.0.0" data-ar="يتضمنه 1.0.0">Included in 1.0.0</h3><p data-en="Target selection, owner-only preview, filters, deep-history exploration, pacing, pause/resume, live progress, reports, audit copy, responsive layout, and Arabic RTL support." data-ar="تحديد الهدف، المعاينة لرسائلك فقط، الفلاتر، استكشاف التاريخ القديم، التدرج، الإيقاف والاستئناف، التقدم الحي، التقارير، نسخ سجل التدقيق، التخطيط المتجاوب، ودعم RTL العربي.">Target selection, owner-only preview, filters, deep-history exploration, pacing, pause/resume, live progress, reports, audit copy, responsive layout, and Arabic RTL support.</p><div class="tags"><span class="tag">1.0.0</span><span class="tag">Giraium Studio</span><span class="tag">Revenge</span></div></article>
+          <article class="release-card"><h3 data-en="Official project links" data-ar="روابط المشروع الرسمية">Official project links</h3><p data-en="Read the documentation, inspect the source, or download the exact package published by Giraium Studio." data-ar="اقرأ التوثيق، راجع المصدر، أو نزّل الحزمة نفسها التي نشرها Giraium Studio.">Read the documentation, inspect the source, or download the exact package published by Giraium Studio.</p><div class="actions"><a class="button secondary" href="README.md" data-en="Read documentation" data-ar="قراءة التوثيق">Read documentation</a><a class="button secondary" href="https://github.com/Giraium/GiraPurge" target="_blank" rel="noopener" data-en="GitHub repository" data-ar="مستودع GitHub">GitHub repository</a></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-row"><span>© 2026 Giraium Studio · GiraPurge 1.0.0</span><div class="footer-links"><a href="https://github.com/Giraium/GiraPurge" target="_blank" rel="noopener">GitHub</a><a href="LICENSE.md">Terms</a><a href="SECURITY.md">Security</a><a href="https://giraium.github.io/GiraPurge/">Revenge repository</a></div></div>
+  </footer>
+  <script>
+    (function () {
+      var lang = 'en';
+      var button = document.getElementById('langButton');
+      function render() {
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.querySelectorAll('[data-en]').forEach(function (node) { node.textContent = node.getAttribute('data-' + lang); });
+        button.textContent = lang === 'ar' ? 'English' : 'العربية';
+      }
+      button.addEventListener('click', function () { lang = lang === 'en' ? 'ar' : 'en'; render(); });
+      document.querySelectorAll('[data-copy]').forEach(function (copyButton) {
+        copyButton.addEventListener('click', function () {
+          var target = document.getElementById(copyButton.getAttribute('data-copy'));
+          navigator.clipboard.writeText(target.textContent).then(function () {
+            var old = copyButton.textContent;
+            copyButton.textContent = lang === 'ar' ? 'تم النسخ' : 'COPIED';
+            setTimeout(function () { copyButton.textContent = old; }, 1400);
+          });
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

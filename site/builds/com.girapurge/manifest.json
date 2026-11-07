@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "id": "com.girapurge",
+  "name": "GiraPurge",
+  "description": "Safely find and delete only your own Discord messages with channel-compatible history scanning, rate-limit recovery, complete data reset, and visible version verification.",
+  "author": "Giraium Studio",
+  "version": "1.0.0",
+  "dependencies": {
+    "revenge.api": {
+      "version": ">=1 <2"
+    },
+    "discord": {
+      "version": "*"
+    }
+  },
+  "dist": {
+    "script": "index.js"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "girapurge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Safely delete only your own Discord messages in the selected DM or channel.",
+  "homepage": "https://giraium.github.io/GiraPurge/",
+  "author": "Giraium Studio",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "scripts": {
+    "release": "python3 scripts/release.py"
+  }
+}

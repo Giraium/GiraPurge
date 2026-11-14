@@ -13,8 +13,8 @@
       "versions": {
         "1.0.0": {
           "url": "https://giraium.github.io/GiraPurge/GiraPurge-1.0.0.zip",
-          "sha256": "cf8c8103d6342f06cbb8ecf2c0fcacfe596ad04ed13510db7dca7f24ccbedc57",
-          "size": 60690,
+          "sha256": "cf8771d8ad40200a9e6e8a3fd6796ecff8918555fde6521623692a2426bc4028",
+          "size": 61078,
           "dependencies": {
             "revenge.api": {
               "version": ">=1 <2"

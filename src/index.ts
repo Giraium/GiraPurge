@@ -238,7 +238,7 @@ const PREVIEW_EXPIRY_MS = 30 * 60 * 1000;
 const PREVIEW_MAX_CANDIDATES = 20_000;
 const MAX_DM_CHECKPOINTS = 64;
 const DM_SOFT_EXHAUSTION_TTL_MS = 15 * 60 * 1000;
-const MIN_DELETE_DELAY_MS = 3_000;
+const MIN_DELETE_DELAY_MS = 1_000;
 const MAX_DELETE_DELAY_MS = 60_000;
 const MAX_MESSAGES_PER_RUN = 10_000;
 const HISTORY_PAGE_SIZE = 100;
@@ -2576,7 +2576,8 @@ function settingsComponent() {
         messages: "الرسائل",
         minimumLimit: "الحد الأدنى 1",
         maximumLimit: "الحد الأقصى 10000",
-        minimumDelay: "الحد الأدنى 3 ثوانٍ",
+        minimumDelay: "الحد الأدنى ثانية واحدة",
+        delayWarning: "تنبيه: اختيار ثانية أو ثانيتين يزيد احتمال أن يقيّد ديسكورد حسابك أو يحظره.",
         maximumDelay: "الحد الأقصى 60 ثانية",
         images: "الصور",
         links: "الروابط",
@@ -2706,7 +2707,8 @@ function settingsComponent() {
         messages: "Messages",
         minimumLimit: "Minimum 1",
         maximumLimit: "Maximum 10000",
-        minimumDelay: "Minimum 3 seconds",
+        minimumDelay: "Minimum 1 second",
+        delayWarning: "Warning: choosing 1 or 2 seconds increases the chance that Discord restricts or bans your account.",
         maximumDelay: "Maximum 60 seconds",
         images: "Images",
         links: "Links",
@@ -2925,7 +2927,7 @@ function settingsComponent() {
     const saveDateDraft = () => { const parsed = Date.parse(dateDraft); if (!Number.isFinite(parsed)) { openDialog(t("dateMode"), t("invalidTarget"), undefined, t("close"), colors.red); return; } updateRules((current) => ({ ...current, [dateEditor === "before" ? "dateBefore" : "dateAfter"]: parsed })); setDateEditor(null); };
     const openNumberEditor = (kind: "limit" | "delay") => { setNumberEditor(kind); setNumberDraft(String(kind === "limit" ? settings.maxPerRun : Math.round(settings.deleteDelayMs / 1000))); };
     const setNumberValue = (value: string) => setNumberDraft(String(value || "").replace(/[^0-9]/g, ""));
-    const commitNumber = () => { if (!numberEditor) return; const value = Number(numberDraft); const minimum = numberEditor === "limit" ? 1 : 3; const maximum = numberEditor === "limit" ? MAX_MESSAGES_PER_RUN : 60; if (!Number.isFinite(value) || value < minimum || value > maximum) { openDialog(t("settings"), language === "ar" ? `أدخل رقماً بين ${minimum} و${maximum}.` : `Enter a number between ${minimum} and ${maximum}.`, undefined, t("close"), colors.red); return; } setSettingsValue((current) => numberEditor === "limit" ? { ...current, maxPerRun: Math.round(value) } : { ...current, deleteDelayMs: Math.round(value) * 1000 }); setNumberEditor(null); };
+    const commitNumber = () => { if (!numberEditor) return; const value = Number(numberDraft); const minimum = numberEditor === "limit" ? 1 : 1; const maximum = numberEditor === "limit" ? MAX_MESSAGES_PER_RUN : 60; if (!Number.isFinite(value) || value < minimum || value > maximum) { openDialog(t("settings"), language === "ar" ? `أدخل رقماً بين ${minimum} و${maximum}.` : `Enter a number between ${minimum} and ${maximum}.`, undefined, t("close"), colors.red); return; } setSettingsValue((current) => numberEditor === "limit" ? { ...current, maxPerRun: Math.round(value) } : { ...current, deleteDelayMs: Math.round(value) * 1000 }); setNumberEditor(null); };
     const toggleLanguage = () => setSettingsValue((current) => ({ ...current, language: current.language === "ar" ? "en" : "ar" }));
     const statusLabel = isRunning ? t("running") : stats?.completion === "finished" ? t("finished") : stats?.completion === "stopped" ? t("stopped") : stats?.completion === "paused" ? t("paused") : t("ready");
     const targetCard = card([
@@ -2947,7 +2949,7 @@ function settingsComponent() {
     const runCard = section(t("run"), [
         React.createElement(View, { style: { flexDirection: "row", flexWrap: "wrap", padding: isTablet ? 12 : 5, justifyContent: isWideTablet ? "flex-start" : "space-between" } },
             actionButton(t("limit"), `${settings.maxPerRun.toLocaleString()} · 1–10000`, colors.accent, () => openNumberEditor("limit"), "run-limit"),
-            actionButton(t("delay"), `${Math.round(settings.deleteDelayMs / 1000)} s · 3–60`, colors.accent, () => openNumberEditor("delay"), "run-delay"),
+            actionButton(t("delay"), `${Math.round(settings.deleteDelayMs / 1000)} s · 1–60`, colors.accent, () => openNumberEditor("delay"), "run-delay"),
             actionButton(previewActionLabel, previewActionSubtitle, colors.accent, previewAction, "dry-run", !targetId || isRunning || previewBusy),
             actionButton(canResume ? t("resume") : t("start"), startActionSubtitle, colors.accent, startTarget, "start", !targetId || isRunning),
             actionButton(t("pause"), language === "ar" ? "استئناف لاحقاً" : "Resume later", colors.accent, pauseTarget, "pause", !isRunning),
@@ -3180,7 +3182,8 @@ function settingsComponent() {
         text(numberEditor === "limit" ? t("limitPrompt") : t("delayPrompt"), { color: colors.muted, fontSize: 12, lineHeight: 17, marginTop: 7, textAlign: language === "ar" ? "right" : "left" }),
         React.createElement(inputType, { value: numberDraft, onChangeText: setNumberValue, keyboardType: "number-pad", selectTextOnFocus: true, style: { color: colors.text, backgroundColor: colors.sidebar, borderColor: colors.accent, borderWidth: 1, borderRadius: 11, paddingHorizontal: 14, paddingVertical: 12, marginTop: 17, fontSize: 21, fontWeight: "900", textAlign: "center", fontFamily: "Alexandria" } }),
         React.createElement(View, { style: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 16 } }, text(numberEditor === "limit" ? t("minimumLimit") : t("minimumDelay"), { color: colors.muted, fontSize: 11 }), text(`${numberEditor === "limit" ? t("maximumLimit") : t("maximumDelay")}`, { color: colors.muted, fontSize: 11 })),
-        React.createElement(sliderType, { minimumValue: numberEditor === "limit" ? 0 : 3, maximumValue: numberEditor === "limit" ? steppedLimitValues.length - 1 : 60, step: 1, value: numberEditor === "limit" ? Math.max(0, steppedLimitValues.indexOf(Number(numberDraft) || settings.maxPerRun)) : Number(numberDraft) || 3, minimumTrackTintColor: colors.accent, maximumTrackTintColor: colors.divider, thumbTintColor: colors.accent, onValueChange: (value: number) => setNumberDraft(String(numberEditor === "limit" ? steppedLimitValues[Math.round(value)] : Math.round(value))), style: { marginTop: 8, height: 40 } }),
+        React.createElement(sliderType, { minimumValue: numberEditor === "limit" ? 0 : 1, maximumValue: numberEditor === "limit" ? steppedLimitValues.length - 1 : 60, step: 1, value: numberEditor === "limit" ? Math.max(0, steppedLimitValues.indexOf(Number(numberDraft) || settings.maxPerRun)) : Number(numberDraft) || 3, minimumTrackTintColor: colors.accent, maximumTrackTintColor: colors.divider, thumbTintColor: colors.accent, onValueChange: (value: number) => setNumberDraft(String(numberEditor === "limit" ? steppedLimitValues[Math.round(value)] : Math.round(value))), style: { marginTop: 8, height: 40 } }),
+        numberEditor === "delay" && Number(numberDraft) > 0 && Number(numberDraft) <= 2 ? text(t("delayWarning"), { color: colors.red, fontSize: 12, fontWeight: "900", lineHeight: 18, marginTop: 12, padding: 10, borderRadius: 10, borderWidth: 1, borderColor: colors.red, backgroundColor: `${colors.red}22`, textAlign: language === "ar" ? "right" : "left" }) : null,
         press([text(t("save"), { color: colors.text, fontWeight: "900", textAlign: "center" })], commitNumber, { minHeight: 46, borderRadius: 12, backgroundColor: colors.accent, justifyContent: "center", marginTop: 15 }),
         press([text(t("cancel"), { color: colors.muted, fontWeight: "800", textAlign: "center" })], () => setNumberEditor(null), { minHeight: 40, justifyContent: "center", marginTop: 4 }),
     ) : null;
